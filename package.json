@@ -28,6 +28,7 @@
     "gulp-size": "^2.0.0",
     "gulp-sourcemaps": "^1.5.0",
     "gulp-uglify": "~0.2.1",
+	"gulp-shell": "^0.5.2",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.10",
     "karma-babel-preprocessor": "^5.2.2",
@@ -39,7 +40,8 @@
     "object-assign": "^4.0.1",
     "phantomjs": "^1.9.19",
     "requirejs": "^2.1.11",
-    "slash": "^1.0.0"
+    "slash": "^1.0.0",
+	"browserify": "^8.0.3"
   },
   "scripts": {
     "postinstall": "bower install && cd test/ && bower install",
