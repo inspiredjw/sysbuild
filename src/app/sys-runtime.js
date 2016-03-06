@@ -1,5 +1,6 @@
 import ExpectTTY from 'app/expect-tty';
 import GccOutputParser from 'app/gcc-output-parser';
+import SysFileSystem from 'app/sys-filesystem';
 import * as Jor1k from 'cjs!jor1k/master/master';
 import LinuxTerm from 'cjs!jor1k/plugins/terminal-linux';
 
@@ -35,6 +36,7 @@ class SysRuntime {
             if (this.tty0ready && this.tty1ready) {
                 // LiveEdit uses the bootFinished value when sent the ready event,
                 // so bootFinished must be updated before broadcasting the event
+                SysFileSystem.initialize(this);
                 this.bootFinished = true;
                 this.notifyListeners('ready', true);
             }

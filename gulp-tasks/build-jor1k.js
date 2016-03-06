@@ -6,7 +6,7 @@ import uglify from 'gulp-uglify';
 gulp.task('jor1k:compile', shell.task([
 		'rm -rf bin && mkdir bin',
 		//'browserify -r ./js/plugins/terminal-linux.js:LinuxTerm -r ./js/master/master.js:Jor1k -o bin/jor1k-master-min.js',
-		'browserify js/worker/worker.js -o bin/jor1k-worker-min.js',
+		'browserify js/worker/worker.js -o bin/jor1k-worker-min.js'
 		// this is a temporary solution. This is not a good idea. need to change it.
 	], {
 		cwd : './src/bower_modules/jor1k/',
