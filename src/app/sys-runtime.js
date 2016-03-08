@@ -70,12 +70,19 @@ class SysRuntime {
             }
         };
 
+		var startLogin = function () {
+			this.sendKeys('tty0', '/bin/busybox --install -s\n', '~ $',
+			function() {onTTY0Login(true); onTTY1Login(true);});
+		}.bind(this);
+
         var termTTY0 = new LinuxTerm('tty0');
         var termTTY1 = new LinuxTerm('tty1');
 
         var jor1kparameters = {
             system: {
                 kernelURL: 'vmlinux.bin.bz2', // kernel image
+				snapshotHeapURL : 'snapshot.bin', // snapshot images
+				snapshotDevURL : 'snapshot.json',
                 memorysize: 32, // in MB, must be a power of two
                 cpu: 'asm', // short name for the cpu to use
 				arch: 'or1k',
@@ -110,8 +117,8 @@ class SysRuntime {
         termTTY1.SetCharReceiveListener(this.putCharTTY1Listener);
 
         // Wait for terminal prompts
-        this.sendKeys('tty0', '', '~ $', onTTY0Login);
-        this.sendKeys('tty1', '', '~ #', onTTY1Login);
+        this.sendKeys('tty0', '', '~ $', startLogin);
+        //this.sendKeys('tty1', '', '~ #', onTTY1Login);
         return this;
     }
 
