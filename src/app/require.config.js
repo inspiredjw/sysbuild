@@ -26,7 +26,9 @@ var require = {
         "cjs":                  "bower_modules/cjs/cjs",
         "amd-loader":           "bower_modules/amd-loader/amd-loader",
         "browserfs":            "bower_modules/browserfs/dist/browserfs.min",
-        "fs":                   "browserfs/dist/node/core/node_fs.js"
+        "fs":                   "bower_modules/browserfs/dist/node/core/node_fs",
+        "github":               "bower_modules/github-api/github",
+        "buffer":               "bower_modules/buffer/buffer"
     },
     shim: {
         "bootstrap": { deps: ["jquery"] },

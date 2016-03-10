@@ -1,4 +1,5 @@
 import BrowserFS from 'browserfs';
+import Buffer from 'buffer';
 
 
 // Encapsulates the virtual machine interface

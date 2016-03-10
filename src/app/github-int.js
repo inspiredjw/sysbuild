@@ -1,6 +1,7 @@
 import Github from 'github';
 import SysFileSystem from 'app/sys-filesystem';
 import { notify } from 'app/notifications';
+import Buffer from 'buffer';
 
 class GithubInt {
     
@@ -48,9 +49,9 @@ class GithubInt {
             if(err) 
             {
                 if(err.request.response=='')
-                    notify("Something happened... Try again.", 'red');
+                    notify('Something happened... Try again.', 'red');
                 else
-                    notify(JSON.parse(err.request.response)["message"], 'red');
+                    notify(JSON.parse(err.request.response)['message'], 'red');
 
                 return;
             }
@@ -71,21 +72,21 @@ class GithubInt {
                             if(showErrors)
                             {
                                 if(err.request.response=='')
-                                    notify("Something happened... Try again.", 'red');
+                                    notify('Something happened... Try again.', 'red');
                                 else
-                                    notify(JSON.parse(err.request.response)["message"], 'red');
+                                    notify(JSON.parse(err.request.response)['message'], 'red');
 
                                 showErrors = false;
                             }
                             return;
                         }
 
-                        fs.writeFile(reponame+'/'+tree[this].path, new Buffer(data,'binary'))
+                        fs.writeFile(reponame+'/'+tree[this].path, new Buffer(data,'binary'));
 
                         loaded += 1;
 
                         if(loaded == tree.length)
-                            notify("Successfully cloned " + repoUrl + "!", 'green');
+                            notify('Successfully cloned ' + repoUrl + '!', 'green');
 
                     }.bind(i));
                 }
@@ -108,7 +109,7 @@ class GithubInt {
 
         if(!this.authenticated)
         {
-            notify("Must be authenticated...", 'red');
+            notify('Must be authenticated...', 'red');
         }
         var repo = this.hub.getRepo(this.username, 'saved-jor1k-workspace');
         repo.show(function(err, repo_info){
@@ -118,9 +119,9 @@ class GithubInt {
                 else 
                 {
                     if(err.request.response=='')
-                        notify("Something happened... Try again.", 'red');
+                        notify('Something happened... Try again.', 'red');
                     else
-                        notify(JSON.parse(err.request.response)["message"], 'red');
+                        notify(JSON.parse(err.request.response)['message'], 'red');
 
                     return;
                 }
@@ -136,14 +137,14 @@ class GithubInt {
     * Helper for saveAll.
     */
     createSaveRepo(err, res) {
-        this.user.createRepo({"name": "saved-jor1k-workspace"}, function(err, res) {
+        this.user.createRepo({'name': 'saved-jor1k-workspace'}, function(err, res) {
 
             if(err) 
             {
                 if(err.request.response=='')
-                    notify("Something happened... Try again.", 'red');
+                    notify('Something happened... Try again.', 'red');
                 else
-                    notify(JSON.parse(err.request.response)["message"], 'red');
+                    notify(JSON.parse(err.request.response)['message'], 'red');
 
                 return;
             }
@@ -167,9 +168,9 @@ class GithubInt {
             if(err) 
             {
                 if(err.request.response=='')
-                    notify("Something happened... Try again.", 'red');
+                    notify('Something happened... Try again.', 'red');
                 else
-                    notify(JSON.parse(err.request.response)["message"], 'red');
+                    notify(JSON.parse(err.request.response)['message'], 'red');
 
                 return;
             }
@@ -187,17 +188,17 @@ class GithubInt {
                 return;
             }    
 
-            fs.readFile(tree[i].path, writeFile.bind(i))
-        }
+            fs.readFile(tree[i].path, writeFile.bind(i));
+        };
 
         var writeFile = function(err, buf){
 
             if(err) 
             {
                 if(err.request.response=='')
-                    notify("Something happened... Try again.", 'red');
+                    notify('Something happened... Try again.', 'red');
                 else
-                    notify(JSON.parse(err.request.response)["message"], 'red');
+                    notify(JSON.parse(err.request.response)['message'], 'red');
 
                 return;
             }
@@ -205,7 +206,7 @@ class GithubInt {
             var i = this;
             tree[this].path = tree[this].path.substring(1,tree[this].path.length);
             repo.write('master', tree[i].path, buf.toString('binary'), 'save', readFile.bind(i+1)); 
-        }
+        };
 
         readFile();
 

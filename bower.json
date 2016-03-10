@@ -25,6 +25,7 @@
     "jquery-ui": "~1.11.4",
     "jquery-fullscreen": "~1.1.4",
     "cjs": "*",
+    "buffer": "3.46.1",
     "browserfs": "0.5.8",
     "github-api": "~0.10.7",
     "ace": "~1.2.2"
