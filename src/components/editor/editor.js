@@ -46,8 +46,9 @@ class Editor {
             saveAs(blob, 'program.c');
         });
 
+		// the name doesn't intuitively match right now.
         $('#autoindent-code-btn').click(() => {
-            this.autoIndentCode();
+            this.totalReindentCode();
         });
 
         this.resize();
@@ -85,16 +86,16 @@ class Editor {
         this.annotations.subscribe((newVal) => { this.setAceAnnotations(newVal); });
 
         this.keyboardShortcuts.forEach((shortcutArgs) => this.addKeyboardCommand(...shortcutArgs));
-
-        // https://github.com/angrave/javaplayland/blob/master/web/scripts/playerCodeEditor.coffee#L500
+		
+		
         this.aceEditor.on('change', () => {
             if (this.prefs.backgroundAutoIndent()) {
-                window.clearTimeout(this.reIndentTimer);
-                if (!this.reIndenting) {
-                    this.reIndentTimer = window.setTimeout(this.autoIndentCode.bind(this), 500);
-                }
-            }
-        });
+				if (this.autoIndentLock == false) {
+					this.autoIndentCode();
+				}
+            } 
+        })
+		
     }
 
     initSettingsDialog() {
@@ -258,7 +259,23 @@ class Editor {
         });
     }
 
-    autoIndentCode() {
+	autoIndentCode() {
+		this.autoIndentLock = true;
+		var editor = this.aceEditor;
+		var editSession = editor.getSession();
+        var mode = editSession.getMode();
+        var position = editor.getCursorPosition();
+		
+		mode.autoOutdent(
+        	editSession.getState(position.row),
+        	editSession,
+        	position.row
+			);
+		this.autoIndentLock = false;
+		
+	}
+
+    totalReindentCode() { 
         // Implementation taken from the javaplayland project
         // https://github.com/angrave/javaplayland/blob/master/web/scripts/playerCodeEditor.coffee#L618
 
