@@ -28,7 +28,6 @@ var require = {
         "browserfs":            "bower_modules/browserfs/dist/browserfs.min",
         "fs":                   "bower_modules/browserfs/dist/node/core/node_fs",
         "github":               "bower_modules/github-api/github",
-        "buffer":               "bower_modules/buffer/buffer"
     },
     shim: {
         "bootstrap": { deps: ["jquery"] },
