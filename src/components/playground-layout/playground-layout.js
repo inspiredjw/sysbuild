@@ -34,6 +34,11 @@ class PlaygroundLayout {
                 backspace: 8
             };
 
+            // allow backspace for bootbox inputs
+            if ($(":focus").hasClass('bootbox-input')) {
+                return true;
+            }
+
             if (e.keyCode === keyCode.backspace) {
                 e.preventDefault();
             }
