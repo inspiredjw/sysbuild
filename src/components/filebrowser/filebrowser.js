@@ -32,10 +32,12 @@ var confirmNotific8Options = {
 class Filebrowser {
     constructor() {
         if (fbCalled) {
+            fbCalled = false;
             return;
         }
         fbCalled = true;
-        SysRuntime.addListener('ready', () => {
+
+        var readyCallback = () => {
             this.id = '#file-browser-body';
             var fs = this.fs = SysFileSystem;
             this.editor = ace.edit('code');
@@ -242,6 +244,16 @@ class Filebrowser {
                 // editor.setFile(this.metaDataPathLookUp['/program.c'].name, content);
                 this.editor.getSession().setValue(content);
             }
+        };
+
+        if (SysRuntime.ready()) {
+            window.setTimeout(() => {
+                readyCallback();
+            }, 300);
+        }
+
+        SysRuntime.addListener('ready', () => {
+            readyCallback();
         });
     }
 
