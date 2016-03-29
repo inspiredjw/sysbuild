@@ -28,13 +28,17 @@ var require = {
         "browserfs":            "bower_modules/browserfs/dist/browserfs.min",
         "fs":                   "bower_modules/browserfs/dist/node/core/node_fs",
         "github":               "bower_modules/github-api/github",
+        "bootstrap-contextmenu":"bower_modules/bootstrap-contextmenu/bootstrap-contextmenu",
+        "bootbox":              "bower_modules/bootbox.js/bootbox"
     },
     shim: {
         "bootstrap": { deps: ["jquery"] },
         "jquery-ui": { deps: ["jquery"] },
         "jquery-ui-layout": { deps: ["jquery", "jquery-ui"] },
         "jquery-fullscreen": { deps: ["jquery"] },
-        "typeahead-jquery": { deps: ["jquery"] }
+        "typeahead-jquery": { deps: ["jquery"] },
+        "bootbox": { deps: ["jquery"] },
+        "bootstrap-contextmenu": { deps: ["bootstrap"] }
     },
     packages: [
         {

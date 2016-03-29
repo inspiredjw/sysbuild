@@ -13,7 +13,7 @@
     "modernizr": "~2.8.3",
     "jquery": "~2.1.4",
     "jor1k": "https://github.com/jjang16/jor1k.git",
-	"jor1k-sysroot": "https://github.com/jjang16/jor1k-sysroot.git",
+    "jor1k-sysroot": "https://github.com/jjang16/jor1k-sysroot.git",
     "Blob": "*",
     "FileSaver": "*",
     "sammy": "~0.7.6",
@@ -27,7 +27,9 @@
     "cjs": "*",
     "browserfs": "0.5.8",
     "github-api": "~0.10.7",
-    "ace": "~1.2.2"
+    "ace": "~1.2.2",
+    "bootstrap-contextmenu": "^0.3.4",
+    "bootbox.js": "^4.4.0"
   },
   "devDependencies": {},
   "resolutions": {

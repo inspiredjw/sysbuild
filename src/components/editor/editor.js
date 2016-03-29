@@ -6,6 +6,7 @@ import 'bloodhound';
 import TokenHighlighter from 'components/editor/token-highlighter';
 import 'Blob';
 import 'FileSaver';
+import * as SysGlobalObservables from 'app/sys-global-observables';
 
 class Editor {
     constructor(params) {
@@ -17,6 +18,7 @@ class Editor {
         prefs.theme = params.theme;
         prefs.fontSize = params.fontSize;
         this.prefs = prefs;
+        this.currentFileName = SysGlobalObservables.currFilename;
 
         this.availableThemes = ko.observableArray(['monokai', 'terminal', 'tomorrow', 'xcode']);
 
@@ -46,9 +48,8 @@ class Editor {
             saveAs(blob, 'program.c');
         });
 
-		// the name doesn't intuitively match right now.
         $('#autoindent-code-btn').click(() => {
-            this.totalReindentCode();
+            this.autoIndentCode();
         });
 
         this.resize();
@@ -86,16 +87,16 @@ class Editor {
         this.annotations.subscribe((newVal) => { this.setAceAnnotations(newVal); });
 
         this.keyboardShortcuts.forEach((shortcutArgs) => this.addKeyboardCommand(...shortcutArgs));
-		
-		
+
+        // https://github.com/angrave/javaplayland/blob/master/web/scripts/playerCodeEditor.coffee#L500
         this.aceEditor.on('change', () => {
             if (this.prefs.backgroundAutoIndent()) {
-				if (this.autoIndentLock == false) {
-					this.autoIndentCode();
-				}
-            } 
-        })
-		
+                window.clearTimeout(this.reIndentTimer);
+                if (!this.reIndenting) {
+                    this.reIndentTimer = window.setTimeout(this.autoIndentCode.bind(this), 500);
+                }
+            }
+        });
     }
 
     initSettingsDialog() {
@@ -259,23 +260,7 @@ class Editor {
         });
     }
 
-	autoIndentCode() {
-		this.autoIndentLock = true;
-		var editor = this.aceEditor;
-		var editSession = editor.getSession();
-        var mode = editSession.getMode();
-        var position = editor.getCursorPosition();
-		
-		mode.autoOutdent(
-        	editSession.getState(position.row),
-        	editSession,
-        	position.row
-			);
-		this.autoIndentLock = false;
-		
-	}
-
-    totalReindentCode() { 
+    autoIndentCode() {
         // Implementation taken from the javaplayland project
         // https://github.com/angrave/javaplayland/blob/master/web/scripts/playerCodeEditor.coffee#L618
 
