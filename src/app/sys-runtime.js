@@ -130,7 +130,7 @@ class SysRuntime {
         this.jor1kgui.FocusTerm(tty);
     }
 
-    startGccCompile(code, gccOptions, guiCallback) {
+    startBuild(buildCmd, guiCallback) {
         if (!this.bootFinished) {
             return 0;
         }
@@ -177,12 +177,7 @@ class SysRuntime {
 
         };
 
-        this.sendKeys('tty0', '\x03\ncd ~;rm program.c program 2>/dev/null\n');
-
-        this.sendTextFile('program.c', code);
-
-        var cmd = 'echo \\#\\#\\#GCC_COMPILE\\#\\#\\#;clear;gcc ' + gccOptions +
-            ' program.c -o program; echo GCC_EXIT_CODE: $?; echo \\#\\#\\#GCC_COMPILE_FINISHED\\#\\#\\#' +
+        var cmd = 'echo \\#\\#\\#GCC_COMPILE\\#\\#\\#;clear;pwd;'+ buildCmd +'; echo GCC_EXIT_CODE: $?; echo \\#\\#\\#GCC_COMPILE_FINISHED\\#\\#\\#' +
             this.compileTicket + '.;clear\n';
 
         this.expecting = this.sendKeys('tty0', cmd, 'GCC_COMPILE_FINISHED###' + this.compileTicket + '.', compileCb);
@@ -190,15 +185,21 @@ class SysRuntime {
         return this.compileTicket;
     }
 
-    getErrorAnnotations(gccOutputStr) {
-        var errors = (new GccOutputParser()).parse(gccOutputStr);
+    getErrorAnnotations(buildOutputStr) {
+        var workingDir = buildOutputStr.substr(0, buildOutputStr.indexOf("\n"));
+        if(workingDir.indexOf('/home/user') == 0)
+            workingDir = workingDir.substr(10, workingDir.length);
+        else
+            workingDir = '';
+
+        var errors = (new GccOutputParser()).parse(buildOutputStr);
         return errors.map((error) => {
             var aceAnnotationType;
 
             // Determine the type of editor annotation. ace supports error, warning or info.
-            if (error.gccErrorType.toLowerCase().indexOf('error') !== -1) {
+            if (error.buildErrorType.toLowerCase().indexOf('error') !== -1) {
                 aceAnnotationType = 'error';
-            } else if (error.gccErrorType.toLowerCase().indexOf('warning') !== -1) {
+            } else if (error.buildErrorType.toLowerCase().indexOf('warning') !== -1) {
                 aceAnnotationType = 'warning';
             } else {
                 aceAnnotationType = 'info';
@@ -212,29 +213,28 @@ class SysRuntime {
 
             return {
                 // line numbers in ace start from zero
+                workingDir: workingDir,
                 row: error.row - 1,
                 col: error.col,
-                isGccOptsError: error.type === 'gcc',
+                isBuildCmdError: (error.type === 'gcc') || (error.type == 'make'),
                 type: aceAnnotationType,
-                text: error.text
+                text: error.text,
+                file: error.file
             };
         });
     }
 
-    startProgram(filename, cmdargs) {
-        if (!filename) {
+    sendExecCmd(cmd) {
+        if (!cmd) {
             return;
         }
-        if (filename[0] !== '/' && filename[0] !== '.') {
-            filename = './' + filename.replace(' ', '\\ ');
+        if (cmd[0] !== '/' && cmd[0] !== '.') {
+            cmd = './' + cmd.replace(' ', '\\ ');
         }
-        cmdargs = cmdargs.replace('\\', '\\\\').replace('\n', '\\n');
+        cmd = cmd.replace('\\', '\\\\').replace('\n', '\\n');
+        
         // Don't \x03 ; it interrupts the clear command
-        this.sendKeys('tty0', '\n' + filename + ' ' + cmdargs + '\n');
-    }
-
-    sendTextFile(filename, contents) {
-        this.sendKeys('tty0', '\nstty raw\ndd ibs=1 of=' + filename + ' count=' + contents.length + '\n' + contents + '\nstty -raw\n');
+        this.sendKeys('tty0', '\n' + cmd + '\n');
     }
 
     // Used to broadcast 'putchar' and 'ready' events

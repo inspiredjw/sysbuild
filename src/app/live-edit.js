@@ -47,36 +47,41 @@ class LiveEdit {
 
         this.runtime.sendKeys('tty0', 'clear\n');
 
-        var aceAnnotations = [], gccOptsErrors = [];
+        var aceAnnotations = [], buildCmdErrors = [];
         result.annotations.forEach((annotation) => {
-            if (annotation.isGccOptsError) {
-                gccOptsErrors.push(annotation);
+            if (annotation.isBuildCmdError) {
+                buildCmdErrors.push(annotation);
             } else {
                 aceAnnotations.push(annotation);
             }
         });
 
+        // TODO!
+        // //if the build is successful set cookie for buildCmd and execCmd
+        // if(result.stats.error == 0)
+        // {
+        //     document.cookie = 'buildCmd=' + this.viewModel.buildCmd() + '; expires=Fri, 31 Dec 9999 23:59:59 GMT';
+        //     document.cookie = 'execCmd=' + this.viewModel.execCmd() + '; expires=Fri, 31 Dec 9999 23:59:59 GMT';
+        // }
+
         SysGlobalObservables.editorAnnotations(aceAnnotations);
         SysGlobalObservables.lastGccOutput(result.gccOutput);
         SysGlobalObservables.gccErrorCount(result.stats.error);
         SysGlobalObservables.gccWarningCount(result.stats.warning);
-        SysGlobalObservables.gccOptsError(gccOptsErrors.map((error) => error.text).join('\n'));
+        SysGlobalObservables.gccOptsError(buildCmdErrors.map((error) => error.text).join('\n'));
 
         if (result.exitCode === 0) {
             SysGlobalObservables.compileStatus(result.stats.warning > 0 ? 'Warnings' : 'Success');
-            this.runtime.startProgram('program', SysGlobalObservables.programArgs());
+            this.runtime.sendExecCmd(SysGlobalObservables.execCmd());
         } else {
             SysGlobalObservables.compileStatus('Failed');
         }
     }
 
-    runCode(code, gccOptions) {
-        if (code.length === 0 || code.indexOf('\x03') >= 0 || code.indexOf('\x04') >= 0) {
-            return;
-        }
+    runCode(buildCmd) {
         var callback = this.processGccCompletion.bind(this);
         SysGlobalObservables.compileStatus('Compiling');
-        this.runtime.startGccCompile(code, gccOptions, callback);
+        this.runtime.startBuild(buildCmd, callback);
     }
 }
 

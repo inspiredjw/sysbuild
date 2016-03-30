@@ -3,7 +3,6 @@ import templateMarkup from 'text!./filebrowser.html';
 import 'knockout-projections';
 import SysRuntime from 'app/sys-runtime';
 import SysFileSystem from 'app/sys-filesystem';
-import ace from 'ace/ace';
 import bootbox from 'bootbox';
 import 'bootstrap-contextmenu';
 import * as SysGlobalObservables from 'app/sys-global-observables';
@@ -40,7 +39,9 @@ class Filebrowser {
         var readyCallback = () => {
             this.id = '#file-browser-body';
             var fs = this.fs = SysFileSystem;
-            this.editor = ace.edit('code');
+
+            //TODO we are using the TokenHighligher to get a reference to the current Ace Editor... find a direct reference
+            this.editor = SysGlobalObservables.Editor;
             this.depth = -1;
             this.directoryState = [];
             this.activePath = '';
@@ -65,8 +66,8 @@ class Filebrowser {
                         this.makeActive(null);
                         var content = fs.readFileSync(this.metaData[itemId].path).toString('binary');
                         this.makeActive(this.metaData[itemId].path);
-                        // editor.setFile(this.metaData[itemId].name, content);
-                        this.editor.getSession().setValue(content);
+                        this.editor.setFile(self.metaData[itemId].path, self.metaData[itemId].name, content);
+                        
 
                         $.notific8('"' + itemName + '" is loaded', confirmNotific8Options);
                         $('span:contains("Code")').click().blur();
@@ -76,6 +77,19 @@ class Filebrowser {
                     }
                 }
             });
+
+            // Save Hotkey
+            this.editor.addKeyboardCommand(
+                'saveFile',
+                {
+                    win: 'Ctrl-S',
+                    mac: 'Command-S',
+                    sender: 'editor|cli'
+                },
+                function(env, args, request) {
+                    self.saveActiveFile();
+                }
+            );
 
             var rightClickedItem;
             var self = this;
@@ -220,18 +234,7 @@ class Filebrowser {
                 }
             });
 
-            // Save Hotkey
-            this.editor.commands.addCommand({
-                name: 'saveFile',
-                bindKey: {
-                    win: 'Ctrl-S',
-                    mac: 'Command-S',
-                    sender: 'editor|cli'
-                },
-                exec: function(env, args, request) {
-                    self.saveActiveFile();
-                }
-            });
+            
 
             // init
             this.init();
@@ -241,8 +244,7 @@ class Filebrowser {
                 this.makeActive(null);
                 var content = fs.readFileSync('/program.c').toString('binary');
                 this.makeActive('/program.c');
-                // editor.setFile(this.metaDataPathLookUp['/program.c'].name, content);
-                this.editor.getSession().setValue(content);
+                this.editor.setFile(self.metaDataPathLookUp['/program.c'].path, self.metaDataPathLookUp['/program.c'].name, content);
             }
         };
 
@@ -408,7 +410,7 @@ class Filebrowser {
     }
 
     saveActiveFile() {
-        var editorContent = this.editor.getValue();
+        var editorContent = this.editor.getText();
         var itemData = this.metaDataPathLookUp[this.activePath];
 
         if (itemData) {
@@ -424,7 +426,8 @@ class Filebrowser {
         if (itemPath && this.metaDataPathLookUp[itemPath]) {
             this.activePath = itemPath;
             $('#' + this.metaDataPathLookUp[itemPath].id).addClass('active-item');
-            SysGlobalObservables.currFilename(this.metaDataPathLookUp[itemPath].name);
+            SysGlobalObservables.currentFileName(this.metaDataPathLookUp[itemPath].name);
+            SysGlobalObservables.currentFilePath(this.metaDataPathLookUp[itemPath].path);
         }
         else {
             this.activePath = '';
@@ -446,8 +449,8 @@ class Filebrowser {
 
         if (this.activePath !== '' && activeFileData) {
             var content = this.fs.readFileSync(activeFileData.path).toString('binary');
-            // this.editor.setFile(activeFileData.name, content);
-            self.editor.getSession().setValue(content);
+            this.editor.setFile(activeFileData.path, activeFileData.name, content);
+            //self.editor.getSession().setValue(content);
         }
 
         for (var i = 0; i < this.children.length; i++) {

@@ -18,7 +18,7 @@ class Editor {
         prefs.theme = params.theme;
         prefs.fontSize = params.fontSize;
         this.prefs = prefs;
-        this.currentFileName = SysGlobalObservables.currFilename;
+        this.currentFileName = SysGlobalObservables.currentFileName;
 
         this.availableThemes = ko.observableArray(['monokai', 'terminal', 'tomorrow', 'xcode']);
 
@@ -45,7 +45,7 @@ class Editor {
         $('#download-file-btn').click(() => {
             var text = this.getText();
             var blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
-            saveAs(blob, 'program.c');
+            saveAs(blob, SysGlobalObservables.currentFileName());
         });
 
         $('#autoindent-code-btn').click(() => {
@@ -56,6 +56,10 @@ class Editor {
         $(window).resize(this.resize.bind(this));
 
         params.editorTextGetter(this.getText.bind(this));
+
+
+        //Saving Global Reference TODO find a reference externally
+        SysGlobalObservables.Editor = this;
     }
 
     initAce(editorDivId) {
@@ -83,6 +87,7 @@ class Editor {
         this.setAceShowInvisbles(this.prefs.showInvisibles());
         this.prefs.showInvisibles.subscribe((newVal) => { this.setAceShowInvisbles(newVal); });
 
+        //TODO use this technique instead of a reference to the Editor in FileBrowser
         this.setAceAnnotations(this.annotations());
         this.annotations.subscribe((newVal) => { this.setAceAnnotations(newVal); });
 
@@ -222,11 +227,31 @@ class Editor {
     }
 
     setAceAnnotations(annotations) {
+
+        this.anno = annotations;
+
+        var currFile = SysGlobalObservables.currentFileName();
+        var currPath = SysGlobalObservables.currentFilePath();
+
+        var currAnnotations = $.grep(annotations, function(e) { return e.workingDir + '/' + e.file == currPath });
+
         this.aceEditor.getSession().setAnnotations(annotations);
     }
 
     getText() {
         return this.aceEditor.getSession().getValue();
+    }
+
+    setFile(path, filename, text) {
+        var session = this.aceEditor.getSession();
+
+        session.setValue(text);
+        if(this.anno){
+            var currAnnotations = $.grep(this.anno, function(e) { return e.workingDir + '/' + e.file == path });
+            session.setAnnotations(currAnnotations);
+        }
+        
+        return; 
     }
 
     resize() {
