@@ -36,12 +36,37 @@ class Filebrowser {
         }
         fbCalled = true;
 
+        var githubOptsContainer = $('#github-opts-container');
+        $('span:contains("File Browser")').click(() => {
+            githubOptsContainer.show();
+        });
+
+        $('span:contains("Code")').click(() => {
+            githubOptsContainer.hide();
+        });
+
+        $('span:contains("Video Search")').click(() => {
+            githubOptsContainer.hide();
+        });
+
+        $('span:contains("Man page search")').click(() => {
+            githubOptsContainer.hide();
+        });
+
+        githubOptsContainer.css('width', $('#code-container').width() + 'px');
+
         var readyCallback = () => {
             this.id = '#file-browser-body';
             var fs = this.fs = SysFileSystem;
 
             //TODO we are using the TokenHighligher to get a reference to the current Ace Editor... find a direct reference
             this.editor = SysGlobalObservables.Editor;
+
+            this.githubUsername = SysGlobalObservables.githubUsername;
+            this.githubPassword = SysGlobalObservables.githubPassword;
+            this.githubRepo = SysGlobalObservables.githubRepo;
+            this.compileBtnEnable = SysGlobalObservables.compileBtnEnable;
+
             this.depth = -1;
             this.directoryState = [];
             this.activePath = '';
@@ -67,7 +92,7 @@ class Filebrowser {
                         var content = fs.readFileSync(this.metaData[itemId].path).toString('binary');
                         this.makeActive(this.metaData[itemId].path);
                         this.editor.setFile(self.metaData[itemId].path, self.metaData[itemId].name, content);
-                        
+
 
                         $.notific8('"' + itemName + '" is loaded', confirmNotific8Options);
                         $('span:contains("Code")').click().blur();
@@ -234,7 +259,7 @@ class Filebrowser {
                 }
             });
 
-            
+
 
             // init
             this.init();
