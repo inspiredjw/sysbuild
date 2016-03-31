@@ -3,7 +3,7 @@ The project was initiated by Dr. Lawrence Angrave in 2014 and has been continuou
 students and faculty at the [University of Illinois at Urbana-Champaign](http://illinois.edu/).
 
 ## Project Leaders
-Dr. Lawrence Angrave [![GitHub][github]](https://github.com/angrave)  
+Dr. Lawrence Angrave [![GitHub][github]](https://github.com/angrave)
 Neelabh Gupta [![GitHub][github]](https://github.com/neelabhg) [![Twitter][twitter]](https://twitter.com/neelabhg)
 
 ## University of Illinois Students and Researchers
@@ -14,15 +14,17 @@ two-semester sequence course in which students work in teams on real-world probl
 Dr. Angrave is the client and liaison for this project.
 
 ### 2015-16 Senior Projects Team
-TODO: Add team members here
+Colton Mercurio [![GitHub][github]](https://github.com/cmercur2)
+Jae Won Jang [![GitHub][github]](https://github.com/jjang16)
+Jeong Woo Chang [![GitHub][github]](https://github.com/inspiredjw)
 
 ### 2014-15 Senior Projects Team
-Anant Singh [![GitHub][github]](https://github.com/anant-singh)  
-Eric Ahn [![GitHub][github]](https://github.com/wchill)  
-Joseph Tran [![GitHub][github]](https://github.com/jdtran23)  
-Keagan McClelland [![GitHub][github]](https://github.com/CaptJakk)  
-Neelabh Gupta [![GitHub][github]](https://github.com/neelabhg) [![Twitter][twitter]](https://twitter.com/neelabhg)  
-Scott Walters [![GitHub][github]](https://github.com/scowalt)  
+Anant Singh [![GitHub][github]](https://github.com/anant-singh)
+Eric Ahn [![GitHub][github]](https://github.com/wchill)
+Joseph Tran [![GitHub][github]](https://github.com/jdtran23)
+Keagan McClelland [![GitHub][github]](https://github.com/CaptJakk)
+Neelabh Gupta [![GitHub][github]](https://github.com/neelabhg) [![Twitter][twitter]](https://twitter.com/neelabhg)
+Scott Walters [![GitHub][github]](https://github.com/scowalt)
 Siddharth Seth [![GitHub][github]](https://github.com/siddharth-seth)
 
 ## Other contributors
