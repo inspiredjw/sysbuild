@@ -35,7 +35,7 @@ class PlaygroundLayout {
             };
 
             // allow backspace for bootbox inputs
-            if ($(":focus").hasClass('bootbox-input')) {
+            if ($(':focus').hasClass('bootbox-input')) {
                 return true;
             }
 

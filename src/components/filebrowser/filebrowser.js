@@ -125,7 +125,7 @@ class Filebrowser {
                     // execute code before context menu if shown
                     rightClickedItem = $(e.target);
                     var itemId = rightClickedItem.data('id');
-                    var menuContainer = this.getMenu().find("ul")
+                    var menuContainer = this.getMenu().find('ul');
                     var menuHtml = '';
 
                     if (self.metaData[itemId].isDirectory) {
@@ -462,7 +462,7 @@ class Filebrowser {
     generateName() {
         this.itemCounter++;
         return this.itemPrefix + Date.now() + '-' + this.itemCounter;
-    };
+    }
 
     getId() {
         return this.id;

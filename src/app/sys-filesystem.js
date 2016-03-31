@@ -1,3 +1,4 @@
+/* global Buffer */
 import BrowserFS from 'browserfs';
 
 // Encapsulates the virtual machine interface
@@ -13,7 +14,7 @@ class SysFileSystem {
         this.initialized = true;
         BrowserFS.install(window);
         BrowserFS.initialize(new BrowserFS.FileSystem.LocalStorage());
-        
+
         this.localFS = require('fs');
         this.jor1kFS = sysRuntime.jor1kgui.fs;
         this.listeners = [];
@@ -21,7 +22,7 @@ class SysFileSystem {
         //if the file system is empty load program.c
         if(this.getDirectoryChildren('/').length == 0)
         {
-            this.localFS.writeFileSync('/program.c', 
+            this.localFS.writeFileSync('/program.c',
                 '/*Write your C code here*/\n' +
                 '#include <stdio.h>\n' +
                 '\n' +
@@ -38,7 +39,7 @@ class SysFileSystem {
     }
 /*------------------------------------------------------------------------------------------------*/
     /**
-    *   API for interating with the joined file system    
+    *   API for interating with the joined file system
     **/
 
     writeFile(path, buf){
@@ -76,14 +77,14 @@ class SysFileSystem {
             path = '/' + path;
 
         if(this.localFS.statSync(path).isFile())
-            this.jor1kFS.DeleteNode('home/user'+path); 
+            this.jor1kFS.DeleteNode('home/user'+path);
     }
 
     /*
     * Creates a directory.
     * Does not overwrite existing directories.
     */
-    makeDirectory(path){   
+    makeDirectory(path){
         if(path.charAt(0)!='/')
             path = '/' + path;
 
@@ -99,9 +100,9 @@ class SysFileSystem {
 
         if(path.charAt(0)!='/')
             path = '/' + path;
-        
+
         if(this.localFS.statSync(path).isDirectory())
-            this.jor1kFS.DeleteNode('home/user'+path); 
+            this.jor1kFS.DeleteNode('home/user'+path);
     }
 
     /*
@@ -111,10 +112,10 @@ class SysFileSystem {
     rename(oldpath, newpath){
         if(oldpath==newpath)
             return;
-        
+
         if(oldpath.charAt(0)!='/')
             oldpath = '/' + oldpath;
-            
+
         if(newpath.charAt(0)!='/')
             newpath = '/' + newpath;
 
@@ -147,7 +148,7 @@ class SysFileSystem {
     * Returns an array of { isDirectory: boolean, name: string } objects
     * of all nodes with in the directory specified in path.
     */
-    getDirectoryChildren(path){ 
+    getDirectoryChildren(path){
         if(path == '')
             path = '/';
 
@@ -188,7 +189,7 @@ class SysFileSystem {
     */
     getDirectoryTreeHelper(path){
         var children = this.localFS.readdirSync(path);
-        
+
         if(path=='/')
             path = '';
 
@@ -249,11 +250,11 @@ class SysFileSystem {
 
 /*------------------------------------------------------------------------------------------------*/
     /**
-    *   Write all local files (those stored in local storage) to    
+    *   Write all local files (those stored in local storage) to
     *   the Jor1k file system (i.e /home/user)
     **/
     syncVM() {
-        
+
         console.log('Starting Syncing VM File System');
         this.jor1kFS.DeleteDirContents('home/user');
         this.syncDirectory('/');
@@ -263,7 +264,7 @@ class SysFileSystem {
     syncDirectory(directory) {
         if(directory != '/')
             this.jor1kFS.CreateDirectory('home/user'+directory);
-        
+
         var children = this.localFS.readdirSync(directory);
         if(directory == '/')
             directory = '';
@@ -277,16 +278,16 @@ class SysFileSystem {
                 var buf = this.localFS.readFileSync(newpath);
                 this.jor1kFS.MergeBinaryFile('home/user'+newpath, new Uint8Array(buf.toArrayBuffer()), 33261);
             }
-        }   
+        }
     }
 /*------------------------------------------------------------------------------------------------*/
     /**
-    *   Handeling callbacks from file operations done on    
+    *   Handeling callbacks from file operations done on
     *   the Jor1k VM
     **/
     Jor1kNotifyCallBack(info){
         var path = info.path.substring('home/user'.length, info.path.length);
-        
+
         if(path=='') return;
         console.log(info.event);
         switch(info.event) {
@@ -308,7 +309,7 @@ class SysFileSystem {
                     if(this.localFS.existsSync(path))
                         this.localFS.unlink(path, function(err){if(err)console.log(err);});
                 this.notifyChangeListeners();
-                break; 
+                break;
             case 'rename':
                 if (info.info!={}){
                     var oldpath = info.info.oldpath.substring('home/user'.length, info.info.oldpath.length);
@@ -320,7 +321,7 @@ class SysFileSystem {
 
     Jor1kReadCallBack(file){
         var filename = file.name.substring('home/user'.length, file.name.length);
-        
+
         console.log('Writting to local: ' + filename);
         var buf = new Buffer(file.data);
         this.localFS.writeFileSync(filename, buf, {mode:file.mode});

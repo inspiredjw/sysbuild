@@ -186,7 +186,7 @@ class SysRuntime {
     }
 
     getErrorAnnotations(buildOutputStr) {
-        var workingDir = buildOutputStr.substr(0, buildOutputStr.indexOf("\n"));
+        var workingDir = buildOutputStr.substr(0, buildOutputStr.indexOf('\n'));
         if(workingDir.indexOf('/home/user') == 0)
             workingDir = workingDir.substr(10, workingDir.length);
         else
@@ -232,7 +232,7 @@ class SysRuntime {
             cmd = './' + cmd.replace(' ', '\\ ');
         }
         cmd = cmd.replace('\\', '\\\\').replace('\n', '\\n');
-        
+
         // Don't \x03 ; it interrupts the clear command
         this.sendKeys('tty0', '\n' + cmd + '\n');
     }

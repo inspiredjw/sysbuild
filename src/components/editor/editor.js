@@ -233,7 +233,7 @@ class Editor {
         var currFile = SysGlobalObservables.currentFileName();
         var currPath = SysGlobalObservables.currentFilePath();
 
-        var currAnnotations = $.grep(annotations, function(e) { return e.workingDir + '/' + e.file == currPath });
+        var currAnnotations = $.grep(annotations, function(e) { return e.workingDir + '/' + e.file == currPath; });
 
         this.aceEditor.getSession().setAnnotations(annotations);
     }
@@ -246,12 +246,12 @@ class Editor {
         var session = this.aceEditor.getSession();
 
         session.setValue(text);
-        if(this.anno){
-            var currAnnotations = $.grep(this.anno, function(e) { return e.workingDir + '/' + e.file == path });
+        if (this.anno) {
+            var currAnnotations = $.grep(this.anno, function(e) { return e.workingDir + '/' + e.file == path; });
             session.setAnnotations(currAnnotations);
         }
-        
-        return; 
+
+        return;
     }
 
     resize() {

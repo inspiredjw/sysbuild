@@ -7,7 +7,7 @@ const errorTypeMap = {
     'gcc': 'gcc',
     'cc1': 'gcc',
     'collect2': 'linker',
-    'make': 'make',
+    'make': 'make'
 };
 
 class GccOutputParser {
@@ -22,7 +22,7 @@ class GccOutputParser {
             match = gccOutputParseRe.exec(errorLine);
             makeErr = makeErrorSplitRe.exec(errorLine);
 
-            if (match) { //two colons 
+            if (match) { //two colons
                 lineColTypeMatch = gccRowColTypeParseRe.exec(match[2]);
 
                 if (lineColTypeMatch) {//num:num: string
