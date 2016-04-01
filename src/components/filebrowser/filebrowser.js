@@ -1,6 +1,7 @@
 import ko from 'knockout';
 import templateMarkup from 'text!./filebrowser.html';
 import 'knockout-projections';
+import GithubInt from 'app/github-int'
 import SysRuntime from 'app/sys-runtime';
 import SysFileSystem from 'app/sys-filesystem';
 import bootbox from 'bootbox';
@@ -30,10 +31,16 @@ var confirmNotific8Options = {
 
 class Filebrowser {
     constructor() {
+        this.githubUsername = SysGlobalObservables.githubUsername;
+        this.githubPassword = SysGlobalObservables.githubPassword;
+        this.githubRepo = SysGlobalObservables.githubRepo;
+        this.compileBtnEnable = SysGlobalObservables.compileBtnEnable;
+
         if (fbCalled) {
             fbCalled = false;
             return;
         }
+
         fbCalled = true;
 
         var githubOptsContainer = $('#github-opts-container');
@@ -55,17 +62,47 @@ class Filebrowser {
 
         githubOptsContainer.css('width', $('#code-container').width() + 'px');
 
+        const $saveReop = $('#save-workspace-btn');
+        $saveReop.click(() => {
+            var username = this.githubUsername();
+            var password = this.githubPassword();
+            console.log("Save Repo")
+            this.githubPassword('');
+
+            if(!username || !password)
+                return;
+
+            var github = new GithubInt(username, password);
+            github.saveAll();
+        });
+
+        const $cloneRepo = $('#clone-repo-btn');
+        $cloneRepo.click(() => {
+            var username = this.githubUsername();
+            var password = this.githubPassword();
+            var repo = this.githubRepo();
+            console.log("Clone Repo")
+            if(!repo)
+                return;
+
+            this.githubPassword('');
+            
+            var github;
+
+            if(username && password)
+                github = new GithubInt(username, password);
+            else
+                github = new GithubInt();
+
+            github.cloneRepo(repo);
+        });
+            
         var readyCallback = () => {
             this.id = '#file-browser-body';
             var fs = this.fs = SysFileSystem;
 
             //TODO we are using the TokenHighligher to get a reference to the current Ace Editor... find a direct reference
             this.editor = SysGlobalObservables.Editor;
-
-            this.githubUsername = SysGlobalObservables.githubUsername;
-            this.githubPassword = SysGlobalObservables.githubPassword;
-            this.githubRepo = SysGlobalObservables.githubRepo;
-            this.compileBtnEnable = SysGlobalObservables.compileBtnEnable;
 
             this.depth = -1;
             this.directoryState = [];
@@ -102,6 +139,8 @@ class Filebrowser {
                     }
                 }
             });
+
+
 
             // Save Hotkey
             this.editor.addKeyboardCommand(

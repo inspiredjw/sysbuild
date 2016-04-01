@@ -26,7 +26,6 @@
     "jquery-fullscreen": "~1.1.4",
     "cjs": "*",
     "browserfs": "0.5.8",
-    "github-api": "~0.10.7",
     "ace": "~1.2.2",
     "bootstrap-contextmenu": "^0.3.4",
     "bootbox.js": "^4.4.0"

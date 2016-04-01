@@ -27,7 +27,6 @@ var require = {
         "amd-loader":           "bower_modules/amd-loader/amd-loader",
         "browserfs":            "bower_modules/browserfs/dist/browserfs.min",
         "fs":                   "bower_modules/browserfs/dist/node/core/node_fs",
-        "github":               "bower_modules/github-api/github",
         "bootstrap-contextmenu":"bower_modules/bootstrap-contextmenu/bootstrap-contextmenu",
         "bootbox":              "bower_modules/bootbox.js/bootbox"
     },
@@ -40,6 +39,7 @@ var require = {
         "bootbox": { deps: ["jquery"] },
         "bootstrap-contextmenu": { deps: ["bootstrap"] }
     },
+
     packages: [
         {
             name: "jor1k",

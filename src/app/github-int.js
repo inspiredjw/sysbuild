@@ -1,7 +1,5 @@
-import Github from 'github';
 import SysFileSystem from 'app/sys-filesystem';
 import { notify } from 'app/notifications';
-import Buffer from 'buffer';
 
 class GithubInt {
     
